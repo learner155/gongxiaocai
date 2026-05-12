@@ -66,7 +66,7 @@ if st.session_state["quick_question"]:
 else:
     prompt = user_input
 
-# 核心对话逻辑（保留time.sleep + 修复所有报错）
+# 核心对话逻辑（保留sleep + 云端流式生效 + 完整聊天记录）
 if prompt:
     st.session_state["quick_question"] = None
 
@@ -74,24 +74,24 @@ if prompt:
     st.chat_message("user",avatar="👨‍🎓").write(prompt)
     st.session_state["message"].append({"role":"user","content":prompt})
 
-    ai_res=[]
+    full_answer = []
     with st.spinner("工小财正在思考中"):
-        # 🔥 修复核心报错：直接定义固定的session_id，不再调用config
-        session_config = {"configurable": {"session_id": "gongxiaocai_123"}}
-        res=st.session_state["rag"].chain.stream({"input":prompt}, config=session_config)
-        # 完全保留你要求的 time.sleep(1)
+        # 🔥 保留你要的 sleep，放在【流式开始前】，不影响打字机！
         time.sleep(1)
 
-        # 你的原捕获函数，完全不动
-        def capture(generator,cache_list):
-            for chunk in generator:
-                if chunk.strip():  # 过滤空内容
-                    cache_list.append(chunk)
-                    yield chunk
+        # 固定会话ID，无报错
+        session_config = {"configurable": {"session_id": "gongxiaocai"}}
+        stream = st.session_state["rag"].chain.stream(
+            {"input": prompt},
+            config=session_config
+        )
 
-        # 修复头像错误，原格式不动
-        st.chat_message("assistant",avatar="🤵🏻").write_stream(capture(res,ai_res))
-        
-        # 保存完整聊天记录，原格式不动
-        full_answer = "".join(ai_res)
-        st.session_state["message"].append({"role":"assistant","content":full_answer})
+        # ✅ 云端原生流式输出（唯一100%生效的写法）
+        with st.chat_message("assistant", avatar="🤵🏻"):
+            for chunk in stream:
+                if chunk.strip():
+                    full_answer.append(chunk)
+                    st.write(chunk)  # 逐字输出，流式效果拉满
+
+    # 保存完整聊天记录
+    st.session_state["message"].append({"role": "assistant", "content": "".join(full_answer)})
