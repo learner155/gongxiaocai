@@ -24,14 +24,11 @@ st.markdown("""
 
 # ===================== 固定在顶部的网页标题 =====================
 st.set_page_config(page_title="工小财-兰州理工财务助手", page_icon="💰")
-
-# 你原来的页面标题（现在会固定不动）
 st.title("工小财")
-st.divider()  # 分隔符
+st.divider()
 
 with st.sidebar:
     st.subheader("常见问题")
-
     if st.button("📋 报销流程指引"):
         st.session_state["quick_question"] = "请问报销的完整流程和需要准备的材料是什么？"
     if st.button("💳 学费缴费问题"):
@@ -46,7 +43,6 @@ if "message" not in st.session_state:
 if "rag" not in st.session_state:
     st.session_state["rag"] = RagService()
 
-# 初始化快捷提问状态
 if "quick_question" not in st.session_state:
     st.session_state["quick_question"] = None
 
@@ -65,21 +61,20 @@ else:
     prompt = user_input
 
 if prompt:
-    # 执行后立刻清空快捷提问！防止残留
     st.session_state["quick_question"] = None
 
-    # 输出用户的提问并保存
+    # 渲染用户输入
     st.chat_message("user", avatar="👨‍🎓").write(prompt)
     st.session_state["message"].append({"role": "user", "content": prompt})
 
-    # ===================== 修改后的流式输出逻辑 =====================
+    # 流式渲染大模型输出
     with st.chat_message("assistant", avatar="🤵🏻"):
         with st.spinner("工小财正在思考中..."):
-            # 获取数据流 (去掉了 time.sleep，spinner 会自动处理加载状态)
+            # 获取数据流
             res = st.session_state["rag"].chain.stream({"input": prompt}, config.session_config)
             
-        # 原生方法直接渲染流，会自动产生打字机效果，并返回完整拼接后的字符串
+        # 使用 Streamlit 原生方法直接渲染流
         full_response = st.write_stream(res)
         
-    # 直接将完整回复存入历史记录
+    # 保存完整结果
     st.session_state["message"].append({"role": "assistant", "content": full_response})
