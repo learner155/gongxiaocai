@@ -2,6 +2,8 @@ import time
 from rag import RagService
 import streamlit as st
 import config_data as config
+import os
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 #标题
 st.markdown("""
 <style>
