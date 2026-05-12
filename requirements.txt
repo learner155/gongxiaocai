@@ -1,14 +1,11 @@
-# 核心框架
 streamlit
-# RAG 核心（自动匹配兼容版本）
 langchain
 langchain-community
 langchain-core
 langchain-chroma
-# 向量库
 chromadb
-# 阿里云大模型
 dashscope
-# 文件解析
 pypdf
 python-docx
+# 锁死版本，彻底修复protobuf报错
+protobuf==3.20.3
