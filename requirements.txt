@@ -1,8 +1,10 @@
-streamlit
-langchain
-langchain-core
-langchain-community
-langchain-chroma
-pypdf
-python-docx
-dashscope
+streamlit>=1.32.0
+langchain==0.2.6
+langchain-core==0.2.10
+langchain-community==0.2.6
+langchain-chroma==0.1.2
+pypdf==4.2.0
+python-docx==0.8.11
+dashscope==1.19.0
+# 🔥 强制安装低版本 protobuf，解决云端报错
+protobuf==3.20.3
