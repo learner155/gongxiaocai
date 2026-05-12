@@ -39,7 +39,10 @@ class RagService(object):
             ]
         )
 
-        self.chat_model=ChatTongyi(model=config.chat_model_name)
+        self.chat_model = ChatTongyi(
+    model=config.chat_model_name,
+    dashscope_api_key=st.secrets["DASHSCOPE_API_KEY"]
+)
 
         self.chain=self.__get_chain()
 
