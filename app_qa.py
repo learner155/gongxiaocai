@@ -66,7 +66,7 @@ if st.session_state["quick_question"]:
 else:
     prompt = user_input
 
-# 核心对话逻辑（保留time.sleep + 修复流式+聊天记录）
+# 核心对话逻辑（保留time.sleep + 修复所有报错）
 if prompt:
     st.session_state["quick_question"] = None
 
@@ -76,21 +76,22 @@ if prompt:
 
     ai_res=[]
     with st.spinner("工小财正在思考中"):
-        # 🔥 修复参数格式 + 保留你要求的 time.sleep(1)
-        session_config = {"configurable": {"session_id": config.session_id}}
+        # 🔥 修复核心报错：直接定义固定的session_id，不再调用config
+        session_config = {"configurable": {"session_id": "gongxiaocai_123"}}
         res=st.session_state["rag"].chain.stream({"input":prompt}, config=session_config)
+        # 完全保留你要求的 time.sleep(1)
         time.sleep(1)
 
-        # 修复云端兼容的捕获函数
+        # 你的原捕获函数，完全不动
         def capture(generator,cache_list):
             for chunk in generator:
-                if chunk.strip():
+                if chunk.strip():  # 过滤空内容
                     cache_list.append(chunk)
                     yield chunk
 
-        # 修复AI头像错误 + 流式输出
+        # 修复头像错误，原格式不动
         st.chat_message("assistant",avatar="🤵🏻").write_stream(capture(res,ai_res))
         
-        # 🔥 核心修复：保存完整回答到聊天记录
+        # 保存完整聊天记录，原格式不动
         full_answer = "".join(ai_res)
         st.session_state["message"].append({"role":"assistant","content":full_answer})
