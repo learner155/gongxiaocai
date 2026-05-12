@@ -1,22 +1,14 @@
-# 核心Web框架
-streamlit>=1.38.0
-
-# LLM + RAG 核心（全版本配对，绝对兼容）
-langchain==0.2.10
-langchain-core==0.2.10
-langchain-community==0.2.10
-langchain-chroma==0.1.4
-langchain-text-splitters==0.2.0
-
-# 向量数据库
-chromadb==0.5.0
-
-# 阿里云通义千问
-dashscope>=1.19.0
-
-# 文件解析（PDF/Word/TXT）
-pypdf>=4.2.0
-python-docx>=0.8.11
-
-# 修复protobuf冲突
-protobuf==3.20.3
+# 核心框架
+streamlit
+# RAG 核心（自动匹配兼容版本）
+langchain
+langchain-community
+langchain-core
+langchain-chroma
+# 向量库
+chromadb
+# 阿里云大模型
+dashscope
+# 文件解析
+pypdf
+python-docx
